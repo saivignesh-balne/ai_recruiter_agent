@@ -10,6 +10,64 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.globe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
+    <style>
+        .hero-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 600px;
+            padding-top: 120px;
+            gap: 40px;
+        }
+        .hero-content {
+            flex: 1;
+            max-width: 540px;
+            z-index: 2;
+        }
+        .hero-title {
+            font-size: 3.2rem;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: #22223b;
+            margin-bottom: 18px;
+        }
+        .hero-highlight {
+            background: linear-gradient(135deg, #4361ee 0%, #4cc9f0 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: #8d99ae;
+            margin-bottom: 38px;
+            line-height: 1.7;
+        }
+        .btn-primary.pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(67, 97, 238, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(67, 97, 238, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(67, 97, 238, 0); }
+        }
+        .hero-animation {
+            flex: 1;
+            min-width: 350px;
+            min-height: 350px;
+            height: 500px;
+            max-width: 600px;
+            position: relative;
+        }
+        @media (max-width: 1100px) {
+            .hero-container { flex-direction: column; gap: 0; }
+            .hero-animation { width: 100%; min-width: 0; }
+        }
+        @media (max-width: 700px) {
+            .hero-title { font-size: 2rem; }
+            .hero-animation { height: 300px; }
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation -->
@@ -28,7 +86,7 @@
 
     <!-- Hero Section with Premium 3D Animation -->
     <section class="hero">
-        <div class="hero-container">
+        <div class="container hero-container">
             <div class="hero-content">
                 <h1 class="hero-title">
                     <span class="hero-highlight">AI-Powered</span> Career Matching
@@ -48,7 +106,6 @@
     <section class="how-it-works" id="how-it-works">
         <div class="container">
             <h2 class="section-title">The Smart Recruitment Process</h2>
-            
             <div class="process-steps">
                 <div class="step">
                     <div class="step-number">1</div>
@@ -56,7 +113,6 @@
                         <h3>Profile Analysis</h3>
                         <p>Our AI deeply analyzes your resume, skills, and experience to understand your unique value.</p>
                     </div>
-                    <div class="step-connector"></div>
                 </div>
                 <div class="step">
                     <div class="step-number">2</div>
@@ -64,7 +120,6 @@
                         <h3>Smart Matching</h3>
                         <p>Advanced algorithms match you with opportunities that fit your skills and career goals.</p>
                     </div>
-                    <div class="step-connector"></div>
                 </div>
                 <div class="step">
                     <div class="step-number">3</div>
@@ -72,7 +127,6 @@
                         <h3>AI Interview Prep</h3>
                         <p>Practice with our intelligent interviewer that provides real-time feedback and coaching.</p>
                     </div>
-                    <div class="step-connector"></div>
                 </div>
                 <div class="step">
                     <div class="step-number">4</div>
@@ -89,7 +143,6 @@
     <section class="benefits" id="benefits">
         <div class="container">
             <h2 class="section-title">Why Candidates Love Us</h2>
-            
             <div class="benefits-grid">
                 <div class="benefit-card">
                     <div class="benefit-icon">

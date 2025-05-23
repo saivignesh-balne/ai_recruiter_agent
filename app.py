@@ -95,48 +95,62 @@ def score_resume(resume_text, job_role):
     return enhanced_score_resume(resume_text, job_role)
 
 def generate_ai_questions(resume_text, job_role):
+    """
+    Generate 3 technical interview questions using Together API based on the candidate's resume and job role.
+    Falls back to simple NLP-based questions if Together API fails.
+    """
+    import re
+    prompt = (
+        f"Given the following resume, generate 3 unique, technical, and role-specific interview questions "
+        f"for a {JOB_DB[job_role]['title']} interview. "
+        f"Questions should be concise and relevant to the candidate's experience and the job requirements.\n\n"
+        f"Resume:\n{resume_text[:3000]}\n\n"
+        f"Return ONLY the questions as a numbered list."
+    )
     try:
-        # Try Together API first
-        prompt = f"""
-        Generate 5 technical interview questions based on this resume for a {JOB_DB[job_role]['title']} position.
-        Focus on their specific skills and experiences mentioned in the resume.
-        
-        Resume:
-        {resume_text[:3000]}  # Limit to first 3000 chars
-        
-        Return the questions as a numbered list.
-        """
-        
         response = together.Complete.create(
             prompt=prompt,
-            model="togethercomputer/llama-2-70b-chat",
-            max_tokens=500,
+            model="mistralai/Mistral-7B-Instruct-v0.1",
+            max_tokens=300,
             temperature=0.7,
             top_k=50,
             top_p=0.7
         )
-        
-        questions = response['output']['choices'][0]['text']
-        return [q.strip() for q in questions.split('\n') if q.strip() and q[0].isdigit()]
-    
+        # Defensive: check for keys before accessing
+        questions_text = ""
+        if (
+            isinstance(response, dict)
+            and "output" in response
+            and "choices" in response["output"]
+            and len(response["output"]["choices"]) > 0
+            and "text" in response["output"]["choices"][0]
+        ):
+            questions_text = response["output"]["choices"][0]["text"]
+        else:
+            raise Exception("Together API response format unexpected: " + str(response))
+        # Extract numbered questions (e.g., "1. ...", "2. ...", "3. ...")
+        question_matches = re.findall(r"\d+\.\s*(.+?)(?=\n\d+\.|\Z)", questions_text, re.DOTALL)
+        questions = [q.strip().replace('\n', ' ') for q in question_matches if q.strip()]
+        # If not found, fallback to lines with "Question X:"
+        if not questions:
+            questions = re.findall(r"Question\s*\d+:\s*(.+?)(?=\n|$)", questions_text, re.DOTALL)
+            questions = [q.strip().replace('\n', ' ') for q in questions if q.strip()]
+        # Only take the first 3
+        return questions[:3] if questions else []
     except Exception as e:
         print(f"Together API failed, using fallback: {e}")
-        # Fallback to simpler generation
+        # Fallback: generate simple questions using keywords and resume
         doc = nlp(resume_text)
-        
-        # Extract nouns and verbs as topics
-        topics = [chunk.text for chunk in doc.noun_chunks][:5]
-        verbs = [token.lemma_ for token in doc if token.pos_ == "VERB"][:3]
-        
+        keywords = JOB_DB[job_role]['keywords']
+        found_keywords = [kw for kw in keywords if kw in resume_text.lower()]
+        # Use found keywords or fallback to noun chunks
+        topics = found_keywords[:3] if found_keywords else [chunk.text for chunk in doc.noun_chunks][:3]
         questions = [
-            f"Can you describe your experience with {topics[0]}?",
-            f"What was your most challenging project involving {topics[1]}?",
-            f"How do you approach {verbs[0]} when working with {topics[2]}?",
-            f"What metrics do you use to measure success with {topics[3]}?",
-            f"Tell me about a time you had to troubleshoot an issue with {topics[4]}."
+            f"Can you describe your experience with {topics[0]}?" if len(topics) > 0 else "Tell us about your technical experience.",
+            f"What was your most challenging project involving {topics[1]}?" if len(topics) > 1 else "Describe a challenging project you worked on.",
+            f"How do you approach problem-solving in {topics[2]}?" if len(topics) > 2 else "How do you approach problem-solving in your work?"
         ]
-        
-        return questions[:3]  # Return first 3 questions
+        return questions
 
 def generate_interview_questions(resume_text):
     # This would be enhanced with proper NLP in production
@@ -200,19 +214,27 @@ def interview():
     candidate_data = session.get('candidate_data')
     if not candidate_data:
         return redirect(url_for('start_process'))
-    
-    # Use AI-powered question generation
+
+    # Always use AI-powered question generation
     questions = generate_ai_questions(candidate_data['resume_text'], candidate_data['job_role'])
+    # Fallback to default if Together API and NLP both fail
+    if not questions or len(questions) < 1:
+        questions = [
+            "Can you walk us through your experience with the technologies mentioned in your resume?",
+            "What was your most challenging project and how did you approach it?",
+            "How do you stay updated with the latest developments in your field?"
+        ]
     session['interview_questions'] = questions
     session['current_question'] = 0
     session['interview_answers'] = []
-    
-    return render_template('interview.html', 
+
+    return render_template('interview.html',
                          name=candidate_data['name'],
                          job_role=JOB_DB[candidate_data['job_role']]['title'],
                          question=questions[0],
                          question_num=1,
-                         total_questions=len(questions))
+                         total_questions=len(questions),
+                         interview_questions=questions)
 
 @app.route('/process-answer', methods=['POST'])
 def process_answer():

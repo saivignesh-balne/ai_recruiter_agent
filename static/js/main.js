@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize premium Vanta.js globe animation
-    VANTA.GLOBE({
+    // Use Vanta.WAVES for a modern, animated, techy background
+    VANTA.WAVES({
         el: "#vanta-animation",
         mouseControls: true,
         touchControls: true,
@@ -10,10 +10,11 @@ document.addEventListener('DOMContentLoaded', function() {
         scale: 1.00,
         scaleMobile: 1.00,
         color: 0x4361ee,
-        color2: 0x4cc9f0,
-        backgroundColor: 0xffffff,
-        size: 1.20,
-        speed: 1.20
+        shininess: 80.00,
+        waveHeight: 30.00,
+        waveSpeed: 1.2,
+        zoom: 1.1,
+        backgroundColor: 0xf8f9fa
     });
 
     // Navbar scroll effect

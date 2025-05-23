@@ -6,27 +6,240 @@
     <title>AI Interview</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/interview.css') }}">
+    <style>
+        body {
+            background: linear-gradient(120deg, #f8f9fa 0%, #e9f0ff 100%);
+            min-height: 100vh;
+        }
+        .interview-container {
+            display: flex;
+            max-width: 1100px;
+            margin: 60px auto 0 auto;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(67,97,238,0.10), 0 1.5px 8px rgba(76,201,240,0.07);
+            overflow: hidden;
+        }
+        .interview-sidebar {
+            background: linear-gradient(135deg, #4361ee 0%, #4cc9f0 100%);
+            color: #fff;
+            width: 260px;
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 30px;
+        }
+        .interview-sidebar h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .sidebar-questions {
+            margin-top: 10px;
+        }
+        .sidebar-questions ol {
+            padding-left: 18px;
+        }
+        .sidebar-questions li {
+            margin-bottom: 12px;
+            font-size: 1rem;
+            opacity: 0.93;
+            line-height: 1.5;
+        }
+        .sidebar-questions li.active {
+            font-weight: bold;
+            color: #ffe066;
+        }
+        .interview-main {
+            flex: 1;
+            padding: 48px 40px 40px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        .interview-header {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .progress-bar-bg {
+            width: 100%;
+            height: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            margin: 10px 0 0 0;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4361ee 0%, #4cc9f0 100%);
+            width: calc({{ question_num }}/{{ total_questions }}*100%);
+            transition: width 0.5s;
+        }
+        .candidate-info {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 10px;
+            font-size: 1.08rem;
+            color: #3a0ca3;
+        }
+        .question-container {
+            margin-bottom: 10px;
+        }
+        .question-container h2 {
+            font-size: 1.25rem;
+            color: #4361ee;
+            margin-bottom: 8px;
+        }
+        .question {
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: #22223b;
+            background: #f4f8ff;
+            padding: 18px 22px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(67,97,238,0.04);
+        }
+        .video-container {
+            margin: 30px 0 10px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #video-preview {
+            width: 340px;
+            height: 220px;
+            border-radius: 12px;
+            background: #e9ecef;
+            box-shadow: 0 2px 8px rgba(67,97,238,0.08);
+        }
+        .recording-overlay {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-top: 10px;
+        }
+        .recording-indicator {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-weight: 500;
+            color: #e53e3e;
+        }
+        .recording-dot {
+            width: 12px;
+            height: 12px;
+            background: #e53e3e;
+            border-radius: 50%;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        .timer {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            color: #22223b;
+            background: #f8f9fa;
+            border-radius: 5px;
+            padding: 2px 12px;
+            margin-left: 10px;
+        }
+        .controls {
+            display: flex;
+            gap: 18px;
+            margin-top: 18px;
+        }
+        .ai-feedback {
+            margin-top: 30px;
+            padding: 22px 24px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(67,97,238,0.04);
+        }
+        .ai-feedback h3 {
+            color: #4361ee;
+            font-size: 1.15rem;
+            margin-bottom: 14px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .feedback-metrics {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        .metric {
+            flex: 1 1 120px;
+        }
+        .metric-label {
+            font-size: 1rem;
+            color: #3a0ca3;
+            font-weight: 500;
+        }
+        .metric-bar {
+            width: 100%;
+            height: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+        .metric-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #4361ee 0%, #4cc9f0 100%);
+            width: 0%;
+            transition: width 1s ease;
+        }
+        @media (max-width: 900px) {
+            .interview-container { flex-direction: column; }
+            .interview-sidebar { width: 100%; flex-direction: row; align-items: flex-start; gap: 20px; padding: 20px 18px; }
+            .interview-main { padding: 30px 12px; }
+        }
+        @media (max-width: 600px) {
+            .interview-container { margin: 0; border-radius: 0; }
+            .interview-sidebar { padding: 14px 6px; font-size: 0.95rem; }
+            .interview-main { padding: 16px 4px; }
+            #video-preview { width: 100%; height: 160px; }
+        }
+    </style>
 </head>
 <body>
     <div class="interview-container">
-        <div class="interview-header">
-            <h1>AI Video Interview</h1>
-            <div class="progress-info">
-                Question <span class="current-q">{{ question_num }}</span> of <span class="total-q">{{ total_questions }}</span>
+        <aside class="interview-sidebar">
+            <div>
+                <h2>Interview Progress</h2>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" style="width: {{ (question_num/total_questions)*100 }}%;"></div>
+                </div>
+                <div style="margin-top:10px;">
+                    <span>Question {{ question_num }} of {{ total_questions }}</span>
+                </div>
             </div>
-        </div>
-        
-        <div class="candidate-info">
-            <div><strong>Name:</strong> {{ name }}</div>
-            <div><strong>Position:</strong> {{ job_role }}</div>
-        </div>
-        
-        <div class="interview-content">
+            <div class="sidebar-questions">
+                <strong>All Questions:</strong>
+                <ol>
+                    {% for q in interview_questions %}
+                    <li{% if loop.index == question_num %} class="active"{% endif %}>{{ q }}</li>
+                    {% endfor %}
+                </ol>
+            </div>
+            <div style="margin-top:auto;">
+                <div class="candidate-info">
+                    <div><strong>Name:</strong> {{ name }}</div>
+                    <div><strong>Position:</strong> {{ job_role }}</div>
+                </div>
+            </div>
+        </aside>
+        <main class="interview-main">
+            <div class="interview-header">
+                <h1 style="font-size:2rem; color:#4361ee; font-family:'Montserrat',sans-serif;">AI Video Interview</h1>
+            </div>
             <div class="question-container">
                 <h2>Question:</h2>
                 <div class="question">{{ question }}</div>
             </div>
-            
             <div class="video-container">
                 <video id="video-preview" autoplay muted></video>
                 <div id="video-overlay" class="recording-overlay">
@@ -37,7 +250,6 @@
                     <div class="timer">00:00</div>
                 </div>
             </div>
-            
             <form id="interview-form" action="{{ url_for('process_answer') }}" method="POST">
                 <input type="hidden" name="answer" id="answer-text">
                 <div class="controls">
@@ -69,9 +281,8 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
-
     <script src="{{ url_for('static', filename='js/interview.js') }}"></script>
 </body>
 </html>
