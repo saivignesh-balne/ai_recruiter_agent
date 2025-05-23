@@ -1,0 +1,125 @@
+.interview-container {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.interview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.interview-header h1 {
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.progress-info {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.candidate-info {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 30px;
+}
+
+.candidate-info div {
+    margin-bottom: 5px;
+}
+
+.question-container {
+    margin-bottom: 30px;
+}
+
+.question {
+    font-size: 1.2rem;
+    padding: 15px;
+    background-color: #f0f4f8;
+    border-left: 4px solid var(--primary-color);
+    border-radius: 0 5px 5px 0;
+}
+
+.video-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto 30px;
+    border-radius: 5px;
+    overflow: hidden;
+    background-color: #000;
+}
+
+#video-preview {
+    width: 100%;
+    display: block;
+}
+
+.recording-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, transparent 100%);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+}
+
+.recording-indicator {
+    display: flex;
+    align-items: center;
+}
+
+.recording-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background-color: #ff4d4d;
+    border-radius: 50%;
+    margin-right: 8px;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.3; }
+    100% { opacity: 1; }
+}
+
+.timer {
+    font-family: monospace;
+    font-size: 1.1rem;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+#next-btn {
+    display: none;
+}

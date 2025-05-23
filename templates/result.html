@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="result-container">
+        {% if passed %}
+        <div class="result-success">
+            <i class="fas fa-check-circle"></i>
+            <h1>Congratulations!</h1>
+            <p>You've been selected for the next round of interviews.</p>
+        </div>
+        {% else %}
+        <div class="result-failure">
+            <i class="fas fa-times-circle"></i>
+            <h1>Thank You</h1>
+            <p>We appreciate your time, but we've decided to move forward with other candidates.</p>
+        </div>
+        {% endif %}
+        
+        <div class="score-breakdown">
+            <h2>Your Results</h2>
+            <div class="score-card">
+                <h3>Resume Score</h3>
+                <div class="score-value">{{ "%.1f"|format(resume_score) }}%</div>
+                <div class="score-bar">
+                    <div class="score-progress" style="width: {{ resume_score }}%"></div>
+                </div>
+            </div>
+            
+            <div class="score-card">
+                <h3>Interview Score</h3>
+                <div class="score-value">{{ "%.1f"|format(interview_score) }}%</div>
+                <div class="score-bar">
+                    <div class="score-progress" style="width: {{ interview_score }}%"></div>
+                </div>
+            </div>
+            
+            <div class="score-card final-score">
+                <h3>Overall Score</h3>
+                <div class="score-value">{{ "%.1f"|format(final_score) }}%</div>
+                <div class="score-bar">
+                    <div class="score-progress" style="width: {{ final_score }}%"></div>
+                </div>
+            </div>
+        </div>
+        <div class="next-steps">
+            <h2>Next Steps</h2>
+            {% if passed %}
+            <p>Our HR team will contact you within 3 business days to schedule the next steps.</p>
+            {% else %}
+            <p>We encourage you to apply again in the future as new positions become available.</p>
+            {% endif %}
+        </div>
+        <div class="improvement-tips">
+            <h2>How to Improve</h2>
+            <ul>
+                <li>Tailor your resume to highlight relevant skills for the position</li>
+                <li>Include measurable achievements and specific projects</li>
+                <li>Ensure your resume includes keywords from the job description</li>
+                <li>Consider obtaining certifications in key areas</li>
+            </ul>
+        </div>
+        <div class="actions">
+            <a href="/start-process" class="btn-primary">Try Again</a>
+            <a href="/" class="btn-secondary">Return Home</a>
+        </div>
+        
+        <div class="feedback">
+            <h2>Feedback</h2>
+            {% if passed %}
+            <p>Your strong technical skills and communication abilities stood out during the interview process. 
+            Our HR team will contact you within 3 business days to schedule the next steps.</p>
+            {% else %}
+            <p>While your application showed promise, other candidates demonstrated more alignment with our current needs. 
+            We encourage you to apply again in the future as new positions become available.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

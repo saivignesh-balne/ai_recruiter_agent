@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Interview</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/interview.css') }}">
+</head>
+<body>
+    <div class="interview-container">
+        <div class="interview-header">
+            <h1>AI Video Interview</h1>
+            <div class="progress-info">
+                Question <span class="current-q">{{ question_num }}</span> of <span class="total-q">{{ total_questions }}</span>
+            </div>
+        </div>
+        
+        <div class="candidate-info">
+            <div><strong>Name:</strong> {{ name }}</div>
+            <div><strong>Position:</strong> {{ job_role }}</div>
+        </div>
+        
+        <div class="interview-content">
+            <div class="question-container">
+                <h2>Question:</h2>
+                <div class="question">{{ question }}</div>
+            </div>
+            
+            <div class="video-container">
+                <video id="video-preview" autoplay muted></video>
+                <div id="video-overlay" class="recording-overlay">
+                    <div class="recording-indicator">
+                        <span class="recording-dot"></span>
+                        <span>Recording</span>
+                    </div>
+                    <div class="timer">00:00</div>
+                </div>
+            </div>
+            
+            <form id="interview-form" action="{{ url_for('process_answer') }}" method="POST">
+                <input type="hidden" name="answer" id="answer-text">
+                <div class="controls">
+                    <button type="button" id="start-btn" class="btn-primary">Start Recording</button>
+                    <button type="button" id="stop-btn" class="btn-secondary" disabled>Stop Recording</button>
+                    <button type="submit" id="next-btn" class="btn-primary" disabled>Next Question</button>
+                </div>
+            </form>
+            <div class="ai-feedback">
+                <h3>AI Analysis</h3>
+                <div class="feedback-metrics">
+                    <div class="metric">
+                        <span class="metric-label">Speech Clarity</span>
+                        <div class="metric-bar">
+                            <div class="metric-progress" id="clarity-bar"></div>
+                        </div>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Relevance</span>
+                        <div class="metric-bar">
+                            <div class="metric-progress" id="relevance-bar"></div>
+                        </div>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Technical Depth</span>
+                        <div class="metric-bar">
+                            <div class="metric-progress" id="depth-bar"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/interview.js') }}"></script>
+</body>
+</html>
